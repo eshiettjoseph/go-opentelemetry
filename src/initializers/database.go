@@ -1,7 +1,7 @@
 package initializers
 
 import (
-	"go-rest-api/models"
+	"go-opentelemetry/models"
 	"log"
 	"os"
 	"gorm.io/driver/postgres"
