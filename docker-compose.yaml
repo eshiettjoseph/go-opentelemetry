@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment: 
-      - OPTLP_ENDPOINT=http://tempo:4318
+      - OPTLP_ENDPOINT=tempo:4317
       - SERVICE_NAME=go-opentelemetry
       - DB_HOST=postgres
       - DB_USER=joeshiett
@@ -14,6 +14,9 @@ services:
       - SSL_MODE=disable
     ports: 
       - 8080:8080
+    depends_on:
+      - tempo
+      - postgres
 
   postgres:
     image: postgres:latest
