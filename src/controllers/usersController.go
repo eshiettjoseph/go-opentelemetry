@@ -4,7 +4,8 @@ import (
 	"go-rest-api/initializers"
 	"go-rest-api/models"
 	"log"
-
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"github.com/gin-gonic/gin"
 )
 
@@ -47,6 +48,9 @@ func AddUser(c *gin.Context) {
 func GetUsers(c *gin.Context) {
 	// Get users and respond with users
 	var users []models.User
+	span := trace.SpanFromContext(c.Request.Context())
+	span.SetAttributes(attribute.String("controller", "users"))
+	span.AddEvent("This is a sample event", trace.WithAttributes(attribute.Int("pid", 4328), attribute.String("sampleAttribute", "Test")))
 	result := initializers.DB.Find(&users)
 	if result.Error != nil{
 		log.Fatal("Unable to get users:"+ result.Error.Error())
