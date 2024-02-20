@@ -3,13 +3,13 @@ package main
 import (
 	"go-opentelemetry/controllers"
 	"go-opentelemetry/initializers"
+	"go-opentelemetry/metrics"
 	"log"
 	"os"
 	"context"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -65,6 +65,12 @@ func init() {
 func main(){
 	cleanup := initTracer()
 	defer cleanup(context.Background())
+
+	provider := metrics.InitMeter()
+	defer provider.Shutdown(context.Background())
+
+	meter := provider.Meter("go-opentelemetry")
+	metrics.GenerateMetrics(meter)
 
 	router := gin.Default()
 	router.Use(otelgin.Middleware(serviceName))
