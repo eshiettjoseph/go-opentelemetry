@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"go-rest-api/initializers"
-	"go-rest-api/models"
+	"github.com/eshiettjoseph/go-opentelemetry/src/initializers"
+	"github.com/eshiettjoseph/go-opentelemetry/src/models"
 	"log"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"

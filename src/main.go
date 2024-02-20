@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-opentelemetry/controllers"
-	"go-opentelemetry/initializers"
+	"github.com/eshiettjoseph/go-opentelemetry/src/controllers"
+	"github.com/eshiettjoseph/go-opentelemetry/src/initializers"
 	"log"
 	"os"
 	"context"
