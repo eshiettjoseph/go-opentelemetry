@@ -6,7 +6,9 @@ import (
 	"os"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 )
+	
   
 var DB *gorm.DB
 
@@ -20,5 +22,7 @@ func ConnectToDB() {
 	}
 	db.AutoMigrate(&models.User{})
 	DB = db
+	if err := DB.Use(otelgorm.NewPlugin()); err != nil {
+		panic(err)
+	}
 }
-
