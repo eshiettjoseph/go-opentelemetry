@@ -12,7 +12,6 @@ import (
 	api "go.opentelemetry.io/otel/metric"
 	metricsdk "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
-	"google.golang.org/grpc/credentials"
 )
 
 var (
