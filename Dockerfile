@@ -14,7 +14,7 @@ FROM alpine:3.18
 
 COPY --from=build /tmp/go-opentelemetry/out/go-opentelemetry /app/go-opentelemetry
 
-EXPOSE 3000
+EXPOSE 8080
 
 
 CMD ["/app/go-opentelemetry"]

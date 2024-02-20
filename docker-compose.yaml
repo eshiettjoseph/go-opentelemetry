@@ -7,17 +7,27 @@ services:
     environment: 
       - OPTLP_ENDPOINT=http://tempo:4318
       - SERVICE_NAME=go-opentelemetry
-      - DB_HOST=localhost
+      - DB_HOST=postgres
       - DB_USER=joeshiett
       - DB_NAME=postgres
       - DB_PASSWORD=123456
       - SSL_MODE=disable
+    ports: 
+      - 8080:8080
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: joeshiett
+      POSTGRES_PASSWORD: 123456
+      ports: 5432:5432
 
   tempo:
     image: grafana/tempo:latest
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
-      - ../shared/tempo.yaml:/etc/tempo.yaml
+      - ./shared/tempo.yaml:/etc/tempo.yaml
       - ./tempo-data:/tmp/tempo
     ports:
       - "14268:14268"  # jaeger ingest
@@ -27,10 +37,21 @@ services:
       - "4318:4318"  # otlp http
       - "9411:9411"   # zipkin
 
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./shared/prometheus.yaml:/etc/prometheus.yaml
+    ports:
+      - "9090:9090"
+
   grafana:
     image: grafana/grafana:10.2.2
     volumes:
-      - ../shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./shared/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin

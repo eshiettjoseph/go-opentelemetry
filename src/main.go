@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/eshiettjoseph/go-opentelemetry/src/controllers"
-	"github.com/eshiettjoseph/go-opentelemetry/src/initializers"
+	"go-opentelemetry/controllers"
+	"go-opentelemetry/initializers"
 	"log"
 	"os"
 	"context"
@@ -10,8 +10,10 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel/sdk/resource"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
@@ -21,15 +23,15 @@ var (
 )
 
 func initTracer() func(context.Context) error {
-	// Change default HTTPS -> HTTP
-	insecureOpt := otlptracehttp.WithInsecure()
+	
+	insecureOpt := otlptracegrpc.WithInsecure()
 
-	// Update default OTLP reciver endpoint
-	endpointOpt := otlptracehttp.WithEndpoint(otlpEndpoint)
-
-	exporter, err := otlptracehttp.New(
-		context.Background(), 
-		insecureOpt, endpointOpt,
+	exporter, err := otlptrace.New(
+		context.Background(),
+		otlptracegrpc.NewClient(
+			insecureOpt,
+			otlptracegrpc.WithEndpoint(otlpEndpoint),
+		),
 	)
 	if err != nil {
 		log.Fatalf("Failed to create exporter: %v", err)
